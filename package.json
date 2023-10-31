@@ -9,11 +9,16 @@
   "author": "Luis Schaab",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@types/mocha": "^10.0.3",
     "@types/node": "^20.8.9",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "bin": {
     "fake-hh": "index.js"
+  },
+  "dependencies": {
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0"
   }
 }
