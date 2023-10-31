@@ -1,4 +1,10 @@
+#!/usr/bin/env node
 import { access } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
+const JS_CONFIG_FILENAME = 'hardhat.config.js';
+const CJS_CONFIG_FILENAME = 'hardhat.config.cjs';
+const TS_CONFIG_FILENAME = 'hardhat.config.ts';
 
 async function main() {
   const args = process.argv.slice(2);
@@ -33,7 +39,7 @@ async function loadConfig(): Promise<Record<string, any>> {
 
   let userConfig: any;
   try {
-    const imported = require(configPath);
+    const imported = require(await getConfigPath());
     userConfig = imported.default !== undefined ? imported.default : imported;
   } catch (e) {
     throw new Error(`Failed to load config file ${configPath}`);
@@ -58,11 +64,27 @@ async function test() {
 
 async function isTsConfig(): Promise<boolean> {
   try {
-    await access('hardhat.config.ts');
+    await access(resolve(process.cwd(), TS_CONFIG_FILENAME));
     return true;
   } catch {
     return false;
   }
+}
+
+async function getConfigPath(): Promise<string> {
+  const configFiles = [TS_CONFIG_FILENAME, CJS_CONFIG_FILENAME, JS_CONFIG_FILENAME];
+
+  for (const configFile of configFiles) {
+    const configPath = resolve(process.cwd(), configFile);
+    try {
+      await access(configPath);
+      return configPath;
+    } catch (error) {
+      // ignore
+    }
+  }
+
+  throw new Error('No config file found');
 }
 
 main()
