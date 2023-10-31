@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Fake hardhat command, DO NOT USE. Loads the config and runs scripts and tests",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "pub": "npm run build && npm version patch --no-git-tag-version && npm publish"
   },
   "author": "Luis Schaab",
   "license": "UNLICENSED",
