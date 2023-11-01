@@ -20,5 +20,9 @@
   "dependencies": {
     "glob": "^10.3.10",
     "mocha": "^10.2.0"
+  },
+  "peerDependencies": {
+    "ts-node": "*",
+    "typescript": "*"
   }
 }
