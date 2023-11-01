@@ -18,7 +18,8 @@ async function main() {
 
   if (await isTsConfig()) {
     const tsNode = await import('ts-node');
-    tsNode.register();
+    const opts = args[0] === 'test' ? { transpileOnly: true } : {};
+    tsNode.register(opts);
   }
 
   const config = await loadConfig();
