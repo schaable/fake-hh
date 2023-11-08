@@ -9,17 +9,18 @@
   "author": "Luis Schaab",
   "license": "UNLICENSED",
   "devDependencies": {
-    "@types/mocha": "^10.0.3",
-    "@types/node": "^20.8.9",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "@types/glob": "^7.1.1",
+    "@types/mocha": ">=9.1.0",
+    "@types/node": "^16.0.0",
+    "ts-node": "^10.8.0",
+    "typescript": "~5.0.0"
   },
   "bin": {
     "fake-hh": "index.js"
   },
   "dependencies": {
-    "glob": "^10.3.10",
-    "mocha": "^10.2.0"
+    "glob": "7.2.0",
+    "mocha": "^10.0.0"
   },
   "peerDependencies": {
     "ts-node": "*",
