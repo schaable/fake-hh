@@ -7,6 +7,7 @@ import * as glob from 'glob';
 const JS_CONFIG_FILENAME = 'hardhat.config.js';
 const CJS_CONFIG_FILENAME = 'hardhat.config.cjs';
 const TS_CONFIG_FILENAME = 'hardhat.config.ts';
+const CTS_CONFIG_FILENAME = 'hardhat.config.cts';
 const TEST_DIR = 'test';
 
 async function main() {
@@ -39,11 +40,11 @@ async function main() {
 }
 
 async function loadConfig(): Promise<Record<string, any>> {
-  const configPath = (await isTsConfig()) ? 'hardhat.config.ts' : 'hardhat.config.js';
+  const configPath = await getConfigPath();
 
   let userConfig: any;
   try {
-    const imported = require(await getConfigPath());
+    const imported = require(configPath);
     userConfig = imported.default !== undefined ? imported.default : imported;
   } catch (e) {
     throw new Error(`Failed to load config file ${configPath}`);
@@ -79,9 +80,7 @@ async function test() {
 
   // if the project is of type "module" or if there's some ESM test file,
   // we call loadFilesAsync to enable Mocha's ESM support
-  const packageJsonAsText = await readFile(resolve(process.cwd(), 'package.json'), 'utf-8');
-  const projectPackageJson = JSON.parse(packageJsonAsText);
-  const isTypeModule = projectPackageJson.type === 'module';
+  const isTypeModule = await isESM();
   const hasEsmTest = files.some((file) => file.endsWith('.mjs'));
   if (isTypeModule || hasEsmTest) {
     // This instructs Mocha to use the more verbose file loading infrastructure
@@ -94,9 +93,22 @@ async function test() {
   return testFailures;
 }
 
+async function isESM(): Promise<boolean> {
+  try {
+    const packageJsonAsText = await readFile(resolve(process.cwd(), 'package.json'), 'utf-8');
+    const packageJson = JSON.parse(packageJsonAsText);
+    return packageJson.type === 'module';
+  } catch {
+    throw new Error('Failed to read package.json');
+  }
+}
+
 async function isTsConfig(): Promise<boolean> {
   try {
-    await access(resolve(process.cwd(), TS_CONFIG_FILENAME));
+    await Promise.any([
+      access(resolve(process.cwd(), CTS_CONFIG_FILENAME)),
+      access(resolve(process.cwd(), TS_CONFIG_FILENAME)),
+    ]);
     return true;
   } catch {
     return false;
@@ -104,7 +116,7 @@ async function isTsConfig(): Promise<boolean> {
 }
 
 async function getConfigPath(): Promise<string> {
-  const configFiles = [TS_CONFIG_FILENAME, CJS_CONFIG_FILENAME, JS_CONFIG_FILENAME];
+  const configFiles = [JS_CONFIG_FILENAME, CJS_CONFIG_FILENAME, TS_CONFIG_FILENAME, CTS_CONFIG_FILENAME];
 
   for (const configFile of configFiles) {
     const configPath = resolve(process.cwd(), configFile);
