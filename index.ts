@@ -72,7 +72,7 @@ async function test() {
   const { default: Mocha } = await import('mocha');
 
   const files = (await isTsConfig())
-    ? glob.sync(`${TEST_DIR}/**/*.{js,cjs,mjs,ts}`)
+    ? glob.sync(`${TEST_DIR}/**/*.{js,cjs,mjs,ts,cts}`)
     : glob.sync(`${TEST_DIR}/**/*.{js,cjs,mjs}`);
 
   const mocha = new Mocha();
