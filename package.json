@@ -12,6 +12,7 @@
     "@types/glob": "^7.1.1",
     "@types/mocha": ">=9.1.0",
     "@types/node": "^16.0.0",
+    "@types/semver": "^7.5.6",
     "ts-node": "^10.8.0",
     "typescript": "~5.0.0"
   },
@@ -19,8 +20,10 @@
     "fake-hh": "index.js"
   },
   "dependencies": {
+    "env-paths": "^3.0.0",
     "glob": "7.2.0",
-    "mocha": "^10.0.0"
+    "mocha": "^10.0.0",
+    "semver": "^7.5.4"
   },
   "peerDependencies": {
     "ts-node": "*",
